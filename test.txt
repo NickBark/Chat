@@ -1,0 +1,113 @@
+#include "mainframe.h"
+
+MainFrame::MainFrame(QWidget *parent)
+    : QWidget(parent)
+{
+        vbl =  new QVBoxLayout(this);
+        teOut =  new QTextEdit(this);
+        leInp =  new QLineEdit(this);
+        pbTest =  new QPushButton(" TEST ",this);
+
+        setLayout(vbl);
+            vbl->addWidget(teOut);
+            vbl->addWidget(leInp);
+            vbl->addWidget(pbTest);
+
+        connect(pbTest, SIGNAL(clicked()), this,SLOT(slotTest()));
+
+        leInp->setText("abcdefgh");
+//        slotTest();
+}
+
+MainFrame::~MainFrame()
+{
+
+}
+
+void MainFrame::slotTest()
+{
+    QDebug deb = qDebug();
+    qDebug()<<leInp->text();
+
+    //Вводим входную строку в байе-эррэй
+    QByteArray ba, bx;
+    ba.append(leInp->text());
+//================================================
+    int data[100];
+    unsigned char * ch = (unsigned char*)data;
+
+    //Вводим байт-эррэй в массив интов
+    deb<<"ba: ";
+    for(int i=0;i<ba.size();i++){
+        data[i] = ba[i];
+        deb<<data[i];
+    }
+    deb<<"\n ba.size= "<<ba.size()<<"\n";
+
+    //Кодирование - прибавляем интам массива число 1000
+    deb<<"data+1000: ";
+    for(int i=0;i<ba.size();i++){
+        data[i] += 1000;
+        deb<<data[i];
+    }
+    deb<<"\n ba.size= "<<ba.size()<<"\n";
+
+    //Массив чаров указывает на массив закодированных интов
+    deb<<"ch: ";
+    for(int i=0;i<4*ba.size();i++){
+        deb<<ch[i];
+        //Заполняем второй байт-эррэй из массива чаров
+        bx.append(ch[i]);
+    }
+    deb<<"\n bx.size= "<<bx.size()<<"\n";
+
+    deb<<"bx: ";
+    for(int i=0;i<bx.size();i++){
+        deb<<(int)bx[i];
+    }
+    deb<<"\n";
+
+    //МОЖНО ОТПРАВЛЯТЬ bx[] ПО СЕТИ
+//================================================
+    int datax[100];
+    unsigned char * chx = (unsigned char*)datax;
+
+    //ПРИНИМАЕМ bx[] ПО СЕТИ И
+    //Сбрасываем входной байт-эррэй в массив чаров
+    deb<<"chx: ";
+    for(int i=0;i<bx.size();i++){
+        chx[i]=(int)bx[i];
+        deb<<(int)chx[i];
+    }
+    deb<<"\n";
+
+    //Выводм общий с чарами сассив интов
+    deb<<"datax: ";
+    for(int i=0;i<bx.size()/4;i++){
+        deb<<(int)datax[i];
+    }
+    deb<<"\n";
+
+    //Проводим декодирование, вычитаем из интов 1000
+    deb<<"datax-1000: ";
+    for(int i=0;i<bx.size()/4;i++){
+        datax[i] -= 1000;
+        deb<<datax[i];
+    }
+    deb<<"\n";
+
+    QByteArray by;
+    //Вводим декодированный массив интов в байт-эррэй выводим результат
+    deb<<"by: ";
+    for(int i=0;i<bx.size()/4;i++){
+        by.append(datax[i]);
+        deb<<ba[i];
+    }
+    deb<<"\n";
+
+    //Выводим строку в виджет
+    QString str;
+    str.append(by);
+    teOut->append(str);
+
+}
