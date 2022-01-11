@@ -1,33 +1,55 @@
 #include "mainframe.h"
 #include "chat.h"
 #include "rsa.h"
+#include "primes.h"
+#include "keys.h"
 
 MainFrame::MainFrame(QFrame *parent)
     : QFrame(parent)
 {
     setMinimumSize(600,600);
-    move(20,40);
+    move(40,40);
     vbl = new  QVBoxLayout(this);
     setLayout(vbl);
 
     chat = new Chat();
     chat->mf = this;
     rsa = new Rsa(this);
+    primes = new Primes(this);
+    keys = new Keys();
+    keys->mfk = this;
 
     Designer();
     Properties();
     Layout();
     Connector();
 
-    //RSA param
-    p = 13;
-    q = 17;
-    e = 7;
-    n = 221;
+//RSA param
+//    p = 13;
+//    q = 17;
+//    d = 55;
+    while((d>=1000)||(n>=2000)) {
+        primes->getprimes(p,q);
+        n = p*q;
+        e = 7;
+        d=1;
+        eiler = (p-1)*(q-1);
+        //секретный ключ d
+        d = rsa->PrivateKey(e, eiler);
+    }
+
+    keys->slotShowKeys();
+
+//    p = 11;
+//    q = 13;
+//    n = p*q;
+//    e = 7;
+//    d=1;
 //    eiler = (p-1)*(q-1);
-//    секретный ключ d
+//    //секретный ключ d
 //    d = rsa->PrivateKey(e, eiler);
-    d = 55;
+
+    qDebug()<<"p="<<p<<" q="<<q<<"e="<<e<<"n="<<n<<"d="<<d;
  }
 
 MainFrame::~MainFrame()
@@ -37,32 +59,33 @@ MainFrame::~MainFrame()
 
 void MainFrame::Designer()
 {
-         tb = new QToolBar(this);
-            pbNet = new QPushButton(" Сеть ",this);
-         hbl = new QHBoxLayout(this);
-             te_cod = new QTextEdit(this);
-             te_text = new QTextEdit(this);
-         lbinp = new QLabel("Ввод:", this);
-         te_wtext = new QTextEdit(this);
+    tb = new QToolBar(this);
+    pbNet = new QPushButton(" Сеть ",this);
+    hbl = new QHBoxLayout(this);
+    te_cod = new QTextEdit(this);
+    te_text = new QTextEdit(this);
+    lbinp = new QLabel("Ввод:", this);
+    te_wtext = new QTextEdit(this);
+    pbKeys = new QPushButton(" Ключи ",this);
 
 //         pbCoding = new QPushButton("Кодировать",this);
 //         lbcod = new QLabel("Код:", this);lbcod->hide;
 //         te_wcod = new QTextEdit(this);te_wcod->hide;
 
-         pbSend = new QPushButton(" Послать ", this);
+    pbSend = new QPushButton(" Послать ", this);
 }
 
 
 void MainFrame::Layout()
 {
     vbl->addWidget(tb);
-        tb->addWidget(pbNet);
+    tb->addWidget(pbNet);
+    tb->addWidget(pbKeys);
     vbl->addLayout(hbl);
-        hbl->addWidget(te_text);
-        hbl->addWidget(te_cod);
+    hbl->addWidget(te_text);
+    hbl->addWidget(te_cod);
     vbl->addWidget(lbinp);
     vbl->addWidget(te_wtext);
-
 
 //    vbl->addWidget(pbCoding);
 //    vbl->addWidget(lbcod);
@@ -87,11 +110,17 @@ void MainFrame::Connector()
 {
     connect(pbNet,SIGNAL(clicked()),this,SLOT(slotNet()));
     connect(pbSend,SIGNAL(clicked()),chat,SLOT(btSendingData()));
+    connect(pbKeys,SIGNAL(clicked()),this,SLOT(slotKeys()));
 }
 
 void MainFrame::slotNet()
 {
     chat->show();
+}
+
+void MainFrame::slotKeys()
+{
+    keys->show();
 }
 
 QByteArray MainFrame::Encoder(QString & str)
@@ -114,7 +143,7 @@ QByteArray MainFrame::Encoder(QString & str)
     //Кодирование - модульная экспонента
     deb<<"\n cod_data[]: ";
     for(int i=0;i<ba.size();i++){
-        data[i] = rsa->modexp(data[i],e,n);
+        data[i] = rsa->modexp(data[i],his_e,his_n);
         deb<<data[i];
     }
     bout.clear();

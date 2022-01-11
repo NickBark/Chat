@@ -50,10 +50,11 @@
 #include <QToolButton>
 #include <QDoubleSpinBox>
 #include <QScrollBar>
-#include <cmath>
 #include <QtCore/qmath.h>
 #include <QIcon>
 
 #include <QUdpSocket>
+#include <ctime>
+#include <cmath>
 
 #endif // DEPENDS_QT_H

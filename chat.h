@@ -23,6 +23,14 @@ public:
     QPushButton * pbSet;
 
     QUdpSocket * udpSocket;
+    QUdpSocket * broadcastSocket;
+    QTimer * mytimer;
+
+    QHostAddress myip;
+    quint16 myport;
+    QHostAddress broadcast_address;
+    quint16 broadcast_port;
+
 
 signals:
 
@@ -30,6 +38,7 @@ public slots:
     void ReadingData();
     void btSendingData();
     void btSet();
+    void slotBroadcast();
 
 };
 

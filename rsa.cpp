@@ -8,16 +8,21 @@ Rsa::Rsa(QFrame *parent) :
 //Возвращает секретный вторичный ключ для декодирования
 //e - первичный открытый ключ
 //eiler = (p-1)*(q-1)
-long unsigned int Rsa::PrivateKey(int e, int eiler)
+unsigned int Rsa::PrivateKey(int e, int eiler)
 {
     int d = 1;
-
+//    while ( (d*e)%eiler != 1 );
+//    {
+//        if ( (d*e)%eiler == 1 ) break;
+//        d++;
+//    }
     do
     {
       if ( (d*e)%eiler == 1 ) break;
       else d++;
     }
-    while ( (d*e)%eiler != 1 );
+    while (d<65500);
+
 
     return d;
 }

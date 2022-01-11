@@ -5,6 +5,8 @@
 
 class Chat;
 class Rsa;
+class Primes;
+class Keys;
 
 class MainFrame : public QFrame
 {
@@ -23,6 +25,11 @@ public:
 
     Chat * chat;
     Rsa * rsa;
+    Primes * primes;
+    Keys * keys;
+
+    int his_e;
+    int his_n;
     int p;
     int q;
     int e;
@@ -33,20 +40,22 @@ public:
 
 
     QVBoxLayout * vbl;
-        QToolBar * tb;
-            QPushButton * pbNet;
-        QHBoxLayout * hbl;
-            QTextEdit * te_cod;
-            QTextEdit * te_text;
-        QLabel * lbinp;
-        QTextEdit * te_wtext;
-        QPushButton * pbCoding;
-        QLabel * lbcod;
-//        QTextEdit * te_wcod;
-        QPushButton * pbSend;
+    QToolBar * tb;
+    QPushButton * pbNet;
+    QHBoxLayout * hbl;
+    QTextEdit * te_cod;
+    QTextEdit * te_text;
+    QLabel * lbinp;
+    QTextEdit * te_wtext;
+    QPushButton * pbCoding;
+    QLabel * lbcod;
+    //        QTextEdit * te_wcod;
+    QPushButton * pbSend;
+    QPushButton * pbKeys;
 
  public slots:
     void slotNet();
+    void slotKeys();
 };
 
 #endif // MAINFRAME_H

@@ -14,12 +14,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainframe.cpp \
     chat.cpp \
-    rsa.cpp
+    rsa.cpp \
+    primes.cpp \
+    keys.cpp
 
 HEADERS  += mainframe.h \
     dependence_qt.h \
     chat.h \
-    rsa.h
+    rsa.h \
+    primes.h \
+    keys.h
 
 RESOURCES += \
     recource.qrc
